@@ -9,7 +9,6 @@ var ViewModel = function() {
 
   // TODO: Async way to add items to observable array after loading
   setTimeout(() => {self.menuItems(CASINO_LIST)}, 1000);
-  setTimeout(() => {self.currentInput('pa')}, 2000);
 
   self.filterItems = ko.computed(() => {
 
@@ -30,13 +29,13 @@ var ViewModel = function() {
   //   self.menuItems.push(CASINO_LIST[i]);
   // };
 
-  $('#search-button').click(() => {
-    if (self.menuItems().length < 13) {
-      self.menuItems.push('new item');
-    } else {
-      self.menuItems.pop();
-    }
-  });
+  // On input in search-box, updates and displays filterItems
+  $('#search-box').on('input', () => {
+    let input = $('#search-box').val();
+    self.currentInput(input);
+  })
+
+  $('#search-button').click(() => {});
 
 };
 
