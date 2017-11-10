@@ -13,12 +13,6 @@ module.exports = {
     // remove publicPath if putting index into dist folder
     // publicPath: 'dist/'
   },
-  // 
-  // devServer: {
-  //   contentBase: path.join(__dirname, "dist"),
-  //   compress: true,
-  //   port: 9000
-  // },
 
   module: {
     rules: [

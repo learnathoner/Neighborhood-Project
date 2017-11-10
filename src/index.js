@@ -1,5 +1,5 @@
 import '../style/style.css';
-var ko = require('../knockout-3.2.0');
+// var ko = require('../knockout-3.2.0');
 
 /* jshint esversion: 6 */
 
