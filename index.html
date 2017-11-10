@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Neighborhood Project</title>
+    <link rel="stylesheet" href="style/style.css">
   </head>
   <body>
 
     <div id="container">
 
       <!-- Leftside Navigation Section -->
-
       <div id="left-nav">
-
+        <!-- Title -->
         <div id="list-name">
-          <p id="name">My Items</p>
+          <p id="name">Vegas Casinos</p>
         </div>
-
+        <!-- Filter Area -->
         <div id="search-area">
           <input type="text" placeholder="Enter Search" id="search-box" />
-          <input type="button" value="Click me!" id="search-button"/>
+          <input type="button" value="Filter" id="search-button"/>
         </div>
-
+        <!-- List of Places -->
         <div id="menu-items">
           <ul data-bind="foreach: filterItems">
             <li data-bind="text: $data"></li>
@@ -29,95 +30,10 @@
       </div>
 
       <!-- Map Section -->
-
       <div id="map"></div>
-
-      <!-- <div id="root"></div> -->
-
-    </span>
-
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="knockout-3.2.0.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR9w43fPwNxTG2nYWwWK8PCjrlDqH93U0&v=3&callback=initMap&libraries=places"></script>
-
-    <script type="text/javascript">
-
-      // Vegas Strip address
-      const vegasStrip = {lat: 36.1116423, lng: -115.1697258};
-
-      // Variable to hold all Casinos
-      const CASINO_LIST = [];
-      // When Gmap API loads, adds style, creates infowindow, searches for
-      // casinos, after search executes callback
-      function initMap() {
-
-        // Map styling object
-        var myStyle = [
-          {
-            featureType: "administrative",
-            elementType: "labels",
-            stylers: [
-              { visibility: "off" }
-            ]
-          },{
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [
-              { visibility: "off" }
-              ]
-            }
-        ];
-
-        // Map(location in html [non jquery], object with options)
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: vegasStrip,
-          zoom: 15,
-          styles: myStyle
-        });
-
-        infowindow = new google.maps.InfoWindow();
-
-        var service = new google.maps.places.PlacesService(map);
-
-        service.nearbySearch({
-          location: vegasStrip,
-          radius: 2000,
-          type: ['casino']
-        }, callback);
-
-      }
-
-      function callback(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          for (var i = 0; i < results.length; i++) {
-            addCasino(results[i]);
-            createMarker(results[i]);
-          }
-        }
-        //TODO: Add "else" if results dont load
-      }
-
-      function addCasino(place) {
-        CASINO_LIST.push(place.name);
-      }
-
-      function createMarker(place) {
-        var placeLoc = place.geometry.location;
-        var marker = new google.maps.Marker({
-          map: map,
-          position: place.geometry.location
-        });
-
-        google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent(place.name);
-          infowindow.open(map, this);
-        });
-      }
-
-    </script>
-
-    </script>
-  <script type="text/javascript" src="bundle.3c791785af0dae98181f.js"></script></body>
+  <script type="text/javascript" src="bundle.js"></script></body>
 </html>
