@@ -1,4 +1,5 @@
 import '../style/style.css'
+import '../knockout-3.2.0'
 
 /* jshint esversion: 6 */
 
