@@ -1992,7 +1992,7 @@ module.exports = function(module) {
 
 __webpack_require__(2);
 
-__webpack_require__(0);
+var ko = __webpack_require__(0);
 
 /* jshint esversion: 6 */
 
