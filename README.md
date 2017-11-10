@@ -1,1 +1,1 @@
-To access hosted app, go to: **laughable-leg.surge.sh**
+To access hosted app, go to: **https://learnathoner.github.io/Neighborhood-Project/** OR as a backup: **https://htmlpreview.github.io/?https://github.com/learnathoner/Neighborhood-Project/blob/master/dist/index.html**
