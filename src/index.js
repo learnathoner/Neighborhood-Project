@@ -1,3 +1,5 @@
+import '../style/style.css'
+
 /* jshint esversion: 6 */
 
 const loadGoogleMapsAPI = require('load-google-maps-api')
