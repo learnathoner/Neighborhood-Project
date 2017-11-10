@@ -9,10 +9,16 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     // Saves new bundle name with key from entry object
-    filename: '[name].[chunkhash].js',
+    filename: '[name].js',
     // remove publicPath if putting index into dist folder
     // publicPath: 'dist/'
   },
+  // 
+  // devServer: {
+  //   contentBase: path.join(__dirname, "dist"),
+  //   compress: true,
+  //   port: 9000
+  // },
 
   module: {
     rules: [
