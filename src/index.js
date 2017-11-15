@@ -1,18 +1,10 @@
+/* jshint esversion: 6 */
+
 import '../style/style.css'
 import ko from 'knockout';
 
-
-/* jshint esversion: 6 */
-
-const loadGoogleMapsAPI = require('load-google-maps-api')
-
-loadGoogleMapsAPI().then(function(googleMaps) {
-  initMap();
-}).catch((err) => {
-  console.error(`Map could not load: ` + err)
-})
-
 /************ GLOBAL VARS **************/
+
 var map;
 const markers = [];
 let selectedMarker = '';
@@ -22,15 +14,26 @@ const vegasStrip = {
     lat: 36.1116423,
     lng: -115.1697258
 };
-// Will store results from places Casino Search
-const CASINO_LIST = [];
+// Variable to hold knockout Viewmodel, allowing external access
 var vm;
+
+/*** JS GoogleMaps API loader ***/
+
+const loadGoogleMapsAPI = require('load-google-maps-api')
+
+// Loads Google Maps then launches initMap as callback
+loadGoogleMapsAPI().then(function(googleMaps) {
+  initMap();
+}).catch((err) => {
+  console.error(`Map could not load: ` + err)
+})
 
 /************* MAP FUNCTIONS ************/
 
 function initMap() {
 
     // 1. Styling
+    // Turns off all labels aside from road names
 
     var myStyle = [{
         featureType: "administrative",
@@ -58,6 +61,7 @@ function initMap() {
 
     // 3. Search for Places and initiate Knockout
 
+    // Initiate places service
     var service = new google.maps.places.PlacesService(map);
 
     // Search for casinos then run callback
@@ -67,8 +71,7 @@ function initMap() {
         type: ['casino']
     }, callback);
 
-    // For casino in results - add to list, create marker
-    //    After list created, apply KO bindings
+    // For casino in results - add to KO observable list, create marker
     function callback(results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
             for (var i = 0; i < results.length; i++) {
@@ -76,17 +79,17 @@ function initMap() {
                 createMarker(results[i]);
             }
         } else {
-            //TODO: Add else if PlacesServiceStatus not OK
+            console.log('Error: No Casinos found in given location')
         }
     }
 
     function addCasino(place) {
-        CASINO_LIST.push(place.name);
         vm.menuItems.push(place.name);
     }
 
     // 4. Marker Functions
 
+    // Defines marker icons, turns into image obj for map
     var defaultIcon = 'https://png.icons8.com/dice/android/40/000000';
     var highlightedIcon = 'https://png.icons8.com/dice/android/40/27ae60';
     var defaultMarker = makeMarkerIcon(defaultIcon);
@@ -106,7 +109,7 @@ function initMap() {
         return image;
     }
 
-    // Run by callback function after places search for each result
+    // Run as cb after places search for each casino
     // Creates initial markers
     // Pushes each into array and adds listeners (mouseover, click)
     function createMarker(place) {
@@ -147,7 +150,7 @@ function initMap() {
         if (marker.animation) {
             marker.setAnimation(null);
         } else {
-            // If marker currently selected, turn off its animation
+            // If a marker is currently selected, turn off its animation
             if (selectedMarker) {
                 selectedMarker.setAnimation(null);
             }
@@ -159,13 +162,16 @@ function initMap() {
     }
 }
 
-/**** MAP FUNCTIONS OUTSIDE initMap ***/
+/****** INFOWINDOW & WIKIPEDIA API FUNCTIONS ******/
 
+// Creates and opens infowindow with WikiPedia intro paragraph
 function getInfoWindowContent(casinoName, marker) {
-  // Title of 1st result for wikipedia search
+  // Calls function to turn casino name into wikipedia page id
   retrieveWikiSearch(casinoName)
     .then((wikiID) => {
-      retrieveWikiObject(wikiID)
+      // Uses wiki page id to retrieve info paragraph
+      retrieveWikiParagraph(wikiID)
+        // Populates infowindow with name and intro paragraph, then opens
         .then((introPar) => {
           infowindow.setContent(`
             <div class="infoWindow">
@@ -175,21 +181,12 @@ function getInfoWindowContent(casinoName, marker) {
           infowindow.open(map, marker);
         })
     })
-
-  var wikiUrl = `https://en.wikipedia.org/w/api.php?` + $.param({
-    action: 'query',
-    origin: '*',
-    list: 'search',
-    srsearch: `${casinoName}`,
-    format: 'json'
-  });
-
 }
 
-// Retrieves first search result obj for casino name on Wikipedia
+// Searches wikipedia for Casino name, returns first result's PageID
 function retrieveWikiSearch(casinoName) {
 
-  // Param for wikipedia search using casino name
+  // Params for wikipedia search using casino name
   var searchParam = {
     action: 'query',
     origin: '*',
@@ -197,7 +194,8 @@ function retrieveWikiSearch(casinoName) {
     srsearch: `${casinoName}`,
     format: 'json'
   }
-  // Stores url to fetch search results
+
+  // Wiki API URL, with search params
   var wikiUrl = `https://en.wikipedia.org/w/api.php?` + $.param(searchParam);
 
   // Fetches and returns first result
@@ -216,10 +214,10 @@ function retrieveWikiSearch(casinoName) {
   });
 }
 
-// Retrieves first search result obj for casino name on Wikipedia
-function retrieveWikiObject(wikiID) {
+// Uses wikipedia PageID to return intro paragraph
+function retrieveWikiParagraph(wikiID) {
 
-  // Param to retrieve wiki page
+  // Params for query to obtain page
   var pageParam = {
     action: 'query',
     origin: '*',
@@ -230,10 +228,11 @@ function retrieveWikiObject(wikiID) {
     rvsection: '0',
     format: 'json'
   }
-  // Stores url to fetch search results
+
+  // URL to obtain page from Wiki API
   var wikiUrl = `https://en.wikipedia.org/w/api.php?` + $.param(pageParam);
 
-  // Fetches and returns the wikipedia page
+  // Fetches page, if found, returns introparagraph
   return fetch( wikiUrl, {
       method: 'POST',
       headers: new Headers( {
@@ -250,7 +249,9 @@ function retrieveWikiObject(wikiID) {
   })
 }
 
-// Clears selected when input entered
+/**** Global MAP FUNCTIONS OUTSIDE initMap ****/
+
+// Clears selected markers
 function clearSelected() {
     if (selectedMarker) {
         selectedMarker.setAnimation(null);
@@ -258,7 +259,7 @@ function clearSelected() {
     }
 }
 
-// Closes infoWindows
+// Closes infoWindow
 function closeInfoWindow() {
     if (infowindow) {
         infowindow.close();
@@ -266,12 +267,13 @@ function closeInfoWindow() {
 }
 
 // Called when search-box input changed
-// Adjust visible markers based on KO filtered array with input
-function updateMarkers(newList) {
+// Filters visible markers based on new input
+function updateMarkers(filteredList) {
     // For each marker:
-    // If marker in newList of results, visible=true, otherwise hidden
+    // If marker in filteredList, visible=true, otherwise hidden
+    // filteredList is an array of markers that match the current input
     for (let marker of markers) {
-        if (newList.indexOf(marker.title) != -1) {
+        if (filteredList.indexOf(marker.title) != -1) {
             marker.setVisible(true);
         } else {
             marker.setVisible(false);
@@ -287,9 +289,6 @@ var ViewModel = function() {
     self.currentInput = ko.observable('');
     // Creates observable array list of casinos
     self.menuItems = ko.observableArray([]);
-
-    //TODO: Erase
-    // self.menuItems(CASINO_LIST);
 
     // Creates filtered array of results when text input changed
     self.filterItems = ko.computed(() => {
@@ -312,14 +311,17 @@ var ViewModel = function() {
     // 1. Clears infowindows and resets animations
     // 2. Filters results and displays new markers / lists with matches
     $('#search-box').on('input', () => {
+        // Sets KO observable to current textbox input
         let input = $('#search-box').val();
         self.currentInput(input);
 
-        let newList = self.filterItems();
+        // Creates filtered casino list based on new input
+        let filteredList = self.filterItems();
 
+        // Closes infowindow and selected, displays markers matching input
         clearSelected();
         closeInfoWindow();
-        updateMarkers(newList);
+        updateMarkers(filteredList);
     });
 };
 
