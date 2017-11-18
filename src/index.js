@@ -47,7 +47,13 @@ function initMap() {
         stylers: [{
             visibility: "off"
         }]
-    }];
+    }, {
+        featureType: "transit",
+        elementType: "labels",
+        stylers: [{
+            visibility: "off"
+        }]
+      }];
 
     // 2. Map and infowindow creation
 
