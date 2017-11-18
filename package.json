@@ -7,6 +7,7 @@
     "clean": "rimraf dist",
     "build": "NODE_ENV=production npm run clean && webpack -p",
     "serve": "webpack-dev-server",
+    "lint": "jshint **.js --exclude ./node_modules",
     "deploy": "gh-pages -d dist"
   },
   "repository": "",
@@ -20,6 +21,7 @@
     "css-loader": "^0.26.1",
     "gh-pages": "^1.0.0",
     "html-webpack-plugin": "^2.30.1",
+    "jshint": "^2.9.5",
     "rimraf": "^2.6.2",
     "style-loader": "^0.13.1",
     "webpack": "2.2.0-rc.0",

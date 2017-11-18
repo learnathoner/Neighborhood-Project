@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import '../style/style.css'
+import '../style/style.css';
 import ko from 'knockout';
 
 /************ GLOBAL VARS **************/
@@ -19,14 +19,14 @@ var vm;
 
 /*** JS GoogleMaps API loader ***/
 
-const loadGoogleMapsAPI = require('load-google-maps-api')
+const loadGoogleMapsAPI = require('load-google-maps-api');
 
 // Loads Google Maps then launches initMap as callback
 loadGoogleMapsAPI().then(function(googleMaps) {
   initMap();
 }).catch((err) => {
-  console.error(`Map could not load: ` + err)
-})
+  console.error(`Map could not load: ` + err);
+});
 
 /************* MAP FUNCTIONS ************/
 
@@ -85,7 +85,7 @@ function initMap() {
                 createMarker(results[i]);
             }
         } else {
-            console.log('Error: No Casinos found in given location')
+            console.log('Error: No Casinos found in given location');
         }
     }
 
@@ -119,7 +119,6 @@ function initMap() {
     // Creates initial markers
     // Pushes each into array and adds listeners (mouseover, click)
     function createMarker(place) {
-        var placeLoc = place.geometry.location;
         var marker = new google.maps.Marker({
             title: place.name,
             label: place.name,
@@ -185,8 +184,8 @@ function getInfoWindowContent(casinoName, marker) {
               <p> ${introPar} </p>
             </div>`);
           infowindow.open(map, marker);
-        })
-    })
+        });
+    });
 }
 
 // Searches wikipedia for Casino name, returns first result's PageID
@@ -199,7 +198,7 @@ function retrieveWikiSearch(casinoName) {
     list: 'search',
     srsearch: `${casinoName}`,
     format: 'json'
-  }
+  };
 
   // Wiki API URL, with search params
   var wikiUrl = `https://en.wikipedia.org/w/api.php?` + $.param(searchParam);
@@ -233,7 +232,7 @@ function retrieveWikiParagraph(wikiID) {
     explaintext: '',
     rvsection: '0',
     format: 'json'
-  }
+  };
 
   // URL to obtain page from Wiki API
   var wikiUrl = `https://en.wikipedia.org/w/api.php?` + $.param(pageParam);
@@ -252,7 +251,7 @@ function retrieveWikiParagraph(wikiID) {
   } ).then((wikiPageObject) => {
       let pageIntroPar = wikiPageObject.query.pages[wikiID].extract;
       return pageIntroPar;
-  })
+  });
 }
 
 /**** Global MAP FUNCTIONS OUTSIDE initMap ****/
