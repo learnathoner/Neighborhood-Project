@@ -22,6 +22,7 @@ var vm;
 const loadGoogleMapsAPI = require('load-google-maps-api');
 
 // Loads Google Maps then launches initMap as callback
+//TODO: Why not catching error?
 loadGoogleMapsAPI().then(function(googleMaps) {
   initMap();
 }).catch((err) => {
@@ -121,7 +122,10 @@ function initMap() {
     function createMarker(place) {
         var marker = new google.maps.Marker({
             title: place.name,
-            label: place.name,
+            label: {
+              text: place.name,
+              color: "black"
+            },
             map: map,
             animation: google.maps.Animation.DROP,
             icon: defaultMarker,
@@ -142,28 +146,8 @@ function initMap() {
 
         // OnClick, toggles bounce for marker and sets InfoWindow
         marker.addListener('click', function() {
-          let self = this;
-          toggleBounce(marker);
-
-          getInfoWindowContent(place.name, self);
+          activateMarker(this);
         });
-    }
-
-    // Toggle Bounce animation for markers
-    function toggleBounce(marker) {
-        // If clicking on the same marker, turn bounce off
-        if (marker.animation) {
-            marker.setAnimation(null);
-        } else {
-            // If a marker is currently selected, turn off its animation
-            if (selectedMarker) {
-                selectedMarker.setAnimation(null);
-            }
-            // Set bounce animation on new marker
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-            // Sets new marker as currently selected
-            selectedMarker = marker;
-        }
     }
 }
 
@@ -271,6 +255,28 @@ function closeInfoWindow() {
     }
 }
 
+function activateMarker(marker) {
+  toggleBounce(marker);
+  getInfoWindowContent(marker.title, marker);
+}
+
+// Toggle Bounce animation for markers
+function toggleBounce(marker) {
+    // If clicking on the same marker, turn bounce off
+    if (marker.animation) {
+        marker.setAnimation(null);
+    } else {
+        // If a marker is currently selected, turn off its animation
+        if (selectedMarker) {
+            selectedMarker.setAnimation(null);
+        }
+        // Set bounce animation on new marker
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        // Sets new marker as currently selected
+        selectedMarker = marker;
+    }
+}
+
 // Called when search-box input changed
 // Filters visible markers based on new input
 function updateMarkers(filteredList) {
@@ -290,44 +296,41 @@ function updateMarkers(filteredList) {
 
 var ViewModel = function() {
 
-    var self = this;
-    self.currentInput = ko.observable('');
-    // Creates observable array list of casinos
-    self.menuItems = ko.observableArray([]);
+  var self = this;
+  // Observable tracking textInput changes
+  self.currentInput = ko.observable('');
+  // Creates observable array list of casinos
+  self.menuItems = ko.observableArray([]);
 
-    // Creates filtered array of results when text input changed
-    self.filterItems = ko.computed(() => {
+  // When textInput observable changed, updates list and markers
+  self.filterItems = ko.computed(() => {
+    let filteredList;
+      // If currentInput empty, returns original menuItem list
+      if (self.currentInput() === '') {
+          filteredList = self.menuItems();
+      } else {
+          // If currentInput not empty, creates filtered array based on input
+          var filter = this.currentInput().toLowerCase();
 
-        // Tracks currentInput obervable for new input
-        // If currentInput empty, returns original menuItem list
-        if (self.currentInput() === '') {
-            return self.menuItems();
-        } else {
-            // If currentInput not empty, returns filtered array based on input
-            var filter = this.currentInput().toLowerCase();
-
-            return ko.utils.arrayFilter(self.menuItems(), (casino) => {
-                return casino.toLowerCase().indexOf(filter) !== -1;
+          filteredList = ko.utils.arrayFilter(self.menuItems(), (casino) => {
+              return casino.toLowerCase().indexOf(filter) !== -1;
             });
-        }
-    });
+      }
+      // Calls function to update Markers with new list, returns new list
+      updateMarkers(filteredList);
+      return filteredList;
+  });
 
-    // Event Listener for search-box text input
-    // 1. Clears infowindows and resets animations
-    // 2. Filters results and displays new markers / lists with matches
-    $('#search-box').on('input', () => {
-        // Sets KO observable to current textbox input
-        let input = $('#search-box').val();
-        self.currentInput(input);
-
-        // Creates filtered casino list based on new input
-        let filteredList = self.filterItems();
-
-        // Closes infowindow and selected, displays markers matching input
-        clearSelected();
-        closeInfoWindow();
-        updateMarkers(filteredList);
-    });
+  self.selectMarker = function(casino, event) {
+    let listItem = event.target;
+    console.log(listItem)
+    for (let marker of markers) {
+      if (marker.title === casino) {
+        activateMarker(marker);
+        return;
+      }
+    }
+  }
 };
 
 vm = new ViewModel();

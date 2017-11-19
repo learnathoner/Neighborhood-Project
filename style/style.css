@@ -86,9 +86,14 @@ li {
   padding: 10px;
 }
 
+li:hover {
+  color: red;
+}
+
 #menu-items {
   height: 85%;
   font-size: 1em;
+  cursor: pointer;
 }
 
 div.infoWindow {
