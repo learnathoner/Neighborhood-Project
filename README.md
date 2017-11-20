@@ -13,7 +13,20 @@ The purpose of this application is to use HTML, CSS, JS, and a Javascript framew
   * **Interaction:** Markers change icon upon mouseover, add bounce effect and infoWindow on click, and can be filtered through menu (see below)
 * **InfoWindow:** The infoWindow information is generated through Wikipedia's API. Uses Google's provided casino name to search for Wikipedia results, then extracts intro paragraph from the first result's Wikipedia page.
 * **Menu:** Typing in the filter menu changes the visible markers to only match results with the new input
+  * You can click on any of the results in the list to select that marker and open information for it
 
 ## USE
 
-To access the hosted app, go to: **https://learnathoner.github.io/Neighborhood-Project/** 
+### Online
+To access the hosted app, go to: **https://learnathoner.github.io/Neighborhood-Project/**
+
+### Locally
+
+To run locally, you must clone the repository - `git clone https://learnathoner.github.io/Neighborhood-Project/` and then either:
+- Open index.html located in the dist folder
+
+OR
+
+- Go to the root project folder in terminal:
+- (With npm installed) Enter `$ npm install`
+- Enter `$ npm run serve`

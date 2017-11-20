@@ -65,6 +65,7 @@ p#name {
   font-size: .75em;
 }
 
+/*WHY ARE THE CORNERS ROUND?*/
 #search-button {
   height: 100%;
   font-size: 1em;
@@ -112,8 +113,9 @@ div.infoWindow {
   }
 
   #left-nav {
-    display: flex;
-    height: 50px;
+    display: block;
+    height: 325px;
+    z-index: 2;
   }
 
   #list-name {
@@ -133,8 +135,13 @@ div.infoWindow {
     height: 25px;
   }
 
-  #menu-items {
-    display: none;
+  #menu-items ul {
+    column-count: 3;
+    height: auto;
+  }
+
+  li {
+    align-items: left;
   }
 }
 

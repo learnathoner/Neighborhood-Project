@@ -23,11 +23,12 @@ const loadGoogleMapsAPI = require('load-google-maps-api');
 
 // Loads Google Maps then launches initMap as callback
 //TODO: Why not catching error?
-loadGoogleMapsAPI().then(function(googleMaps) {
-  initMap();
-}).catch((err) => {
-  console.error(`Map could not load: ` + err);
-});
+loadGoogleMapsAPI()
+  .then(function(googleMaps) {
+    initMap();
+  }).catch(function(err) {
+    console.error(`Map could not load: ` + err);
+  });
 
 /************* MAP FUNCTIONS ************/
 
@@ -198,7 +199,9 @@ function retrieveWikiSearch(casinoName) {
         return response.json();
       }
       throw new Error( 'Network response was not ok: ' + response.statusText );
-  } ).then( function ( searchResults ) {
+  } ).catch(function(error) {
+    console.log('There has been a problem with your fetch operation: ' + error.message);
+  }).then( function ( searchResults ) {
       return searchResults.query.search[0].pageid;
   });
 }
@@ -232,7 +235,9 @@ function retrieveWikiParagraph(wikiID) {
         return response.json();
       }
       throw new Error( 'Network response was not ok: ' + response.statusText );
-  } ).then((wikiPageObject) => {
+  } ).catch(function(error) {
+    console.log('There has been a problem with your fetch operation: ' + error.message);
+  }).then((wikiPageObject) => {
       let pageIntroPar = wikiPageObject.query.pages[wikiID].extract;
       return pageIntroPar;
   });
