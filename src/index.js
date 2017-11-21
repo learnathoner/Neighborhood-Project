@@ -23,7 +23,11 @@ const loadGoogleMapsAPI = require('load-google-maps-api');
 
 // Loads Google Maps then launches initMap as callback
 //TODO: Why not catching error?
-loadGoogleMapsAPI()
+loadGoogleMapsAPI({
+    key: 'AIzaSyDR9w43fPwNxTG2nYWwWK8PCjrlDqH93U0',
+    v: '3',
+    libraries: ['places'],
+    timeout: 3000})
   .then(function(googleMaps) {
     initMap();
   }).catch(function(err) {
@@ -307,9 +311,15 @@ var ViewModel = function() {
   // Creates observable array list of casinos
   self.menuItems = ko.observableArray([]);
 
-  // When textInput observable changed, updates list and markers
+  // When input changed, updates list and markers
+  // Computed function that tracks currentInput observable
   self.filterItems = ko.computed(() => {
     let filteredList;
+
+    // First closes info window and clears the selected marker
+    closeInfoWindow();
+    clearSelected();
+
       // If currentInput empty, returns original menuItem list
       if (self.currentInput() === '') {
           filteredList = self.menuItems();
