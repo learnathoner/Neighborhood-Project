@@ -20,14 +20,15 @@ var vm;
 /*** JS GoogleMaps API loader ***/
 
 const loadGoogleMapsAPI = require('load-google-maps-api');
+var googleMapsAPIOptions = {
+  key: 'AIzaSyDR9w43fPwNxTG2nYWwWK8PCjrlDqH93U0',
+  v: '3',
+  libraries: ['places'],
+  timeout: 3000
+};
 
 // Loads Google Maps then launches initMap as callback
-//TODO: Why not catching error?
-loadGoogleMapsAPI({
-    key: 'AIzaSyDR9w43fPwNxTG2nYWwWK8PCjrlDqH93U0',
-    v: '3',
-    libraries: ['places'],
-    timeout: 3000})
+loadGoogleMapsAPI(googleMapsAPIOptions)
   .then(function(googleMaps) {
     initMap();
   }).catch(function(err) {
@@ -337,14 +338,13 @@ var ViewModel = function() {
   });
 
   self.selectMarker = function(casino, event) {
-    let listItem = event.target;
     for (let marker of markers) {
       if (marker.title === casino) {
         activateMarker(marker);
         return;
       }
     }
-  }
+  };
 };
 
 vm = new ViewModel();
