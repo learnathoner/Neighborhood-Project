@@ -338,7 +338,6 @@ var ViewModel = function() {
 
   self.selectMarker = function(casino, event) {
     let listItem = event.target;
-    console.log(listItem)
     for (let marker of markers) {
       if (marker.title === casino) {
         activateMarker(marker);
