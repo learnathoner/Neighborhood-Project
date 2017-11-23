@@ -64,6 +64,15 @@ div.infoWindow {
   text-align: center;
 }
 
+#map.error {
+  display: flex;
+  background-color: black;
+  color: red;
+  font-size: 25px;
+  text-align: center;
+  vertical-align: center;
+}
+
 /* For smaller screens, change side nav to top menu */
 @media (max-width: 768px) {
 

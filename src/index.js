@@ -17,6 +17,21 @@ const vegasStrip = {
 // Variable to hold knockout Viewmodel, allowing external access
 var vm;
 
+// Error handling: replaces map with message displaying error
+function displayError(error, location = 'map') {
+  if (location === 'map') {
+    $('#map').html(`<p>
+        ${error}
+      </p`)
+    $('#map').toggleClass('error');
+  } else {
+    if (location === 'infoWindow') {
+
+    }
+  }
+
+}
+
 /*** JS GoogleMaps API loader ***/
 
 const loadGoogleMapsAPI = require('load-google-maps-api');
@@ -33,6 +48,8 @@ loadGoogleMapsAPI(googleMapsAPIOptions)
     initMap();
   }).catch(function(err) {
     console.error(`Map could not load: ` + err);
+    let errorMsg = 'Could not load Google Maps: Please check your connection or search parameters!'
+    displayError(errorMsg)
   });
 
 /************* MAP FUNCTIONS ************/
@@ -93,6 +110,8 @@ function initMap() {
             }
         } else {
             console.log('Error: No Casinos found in given location');
+            let errorMsg = 'Google Maps could not find any Casinos in the area!';
+            displayError(errorMsg);
         }
     }
 
@@ -122,7 +141,7 @@ function initMap() {
         return image;
     }
 
-    // Run as cb after places search for each casino
+    // Run as callback on each casion after Places search
     // Creates initial markers
     // Pushes each into array and adds listeners (mouseover, click)
     function createMarker(place) {
@@ -206,6 +225,7 @@ function retrieveWikiSearch(casinoName) {
       throw new Error( 'Network response was not ok: ' + response.statusText );
   } ).catch(function(error) {
     console.log('There has been a problem with your fetch operation: ' + error.message);
+    alert('Wikipedia Error! Please check your connection or search parameters.')
   }).then( function ( searchResults ) {
       return searchResults.query.search[0].pageid;
   });
@@ -242,6 +262,8 @@ function retrieveWikiParagraph(wikiID) {
       throw new Error( 'Network response was not ok: ' + response.statusText );
   } ).catch(function(error) {
     console.log('There has been a problem with your fetch operation: ' + error.message);
+    alert(`Could not find Wikipedia intro paragraph for entry.
+      Please verify that the entry name is correct.`)
   }).then((wikiPageObject) => {
       let pageIntroPar = wikiPageObject.query.pages[wikiID].extract;
       return pageIntroPar;
