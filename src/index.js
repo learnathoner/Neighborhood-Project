@@ -22,7 +22,7 @@ function displayError(error, location = 'map') {
   if (location === 'map') {
     $('#map').html(`<p>
         ${error}
-      </p`)
+      </p`);
     $('#map').toggleClass('error');
   } else {
     if (location === 'infoWindow') {}
@@ -45,8 +45,8 @@ loadGoogleMapsAPI(googleMapsAPIOptions).then(function(googleMaps) {
   initMap();
 }).catch(function(err) {
   console.error(`Map could not load: ` + err);
-  let errorMsg = 'Could not load Google Maps: Please check your connection or search parameters!'
-  displayError(errorMsg)
+  let errorMsg = 'Could not load Google Maps: Please check your connection or search parameters!';
+  displayError(errorMsg);
 });
 
 /************* MAP FUNCTIONS ************/
@@ -225,13 +225,13 @@ function retrieveWikiSearch(casinoName) {
     if (response.ok) {
       return response.json();
     }
-    alert('No response from Wikipedia, please check your connection!')
+    alert('No response from Wikipedia, please check your connection!');
     throw new Error('Network response was not ok: ' + response.statusText);
   // Sends response json to retrieve paragraph, or if unavailable throws error
   }).then(function(searchResults) {
     return searchResults.query.search[0].pageid;
   }).catch(function(err) {
-    alert('Wikipedia search error! Please check your search parameters.')
+    alert('Wikipedia search error! Please check your search parameters.');
   });
 }
 
@@ -267,7 +267,7 @@ function retrieveWikiParagraph(wikiID) {
     return pageIntroPar;
   }).catch(function(error) {
     alert(`Could not find Wikipedia intro paragraph for entry.
-      Please verify that the entry name and search parameters are correct.`)
+      Please verify that the entry name and search parameters are correct.`);
   });
 }
 

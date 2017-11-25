@@ -7,7 +7,7 @@
     "clean": "rimraf dist",
     "build": "NODE_ENV=production npm run clean && webpack -p",
     "serve": "webpack-dev-server",
-    "lint": "jshint **.js --exclude ./node_modules",
+    "lint": "jshint src/**.js --exclude ./node_modules",
     "deploy": "gh-pages -d dist"
   },
   "repository": "",
