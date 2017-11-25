@@ -288,7 +288,12 @@ function closeInfoWindow() {
   }
 }
 
+// Called on marker click
 function activateMarker(marker) {
+  // Centers map on marker
+  map.setCenter(marker.getPosition());
+
+  // Sets bounce, retrieves info window content
   toggleBounce(marker);
   getInfoWindowContent(marker.title, marker);
 }
